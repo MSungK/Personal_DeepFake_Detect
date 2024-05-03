@@ -9,3 +9,6 @@
 *.csv
 *.zip
 *.tar
+*.z*
+*.onnx
+*.pth

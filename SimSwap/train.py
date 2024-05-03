@@ -42,7 +42,7 @@ class TrainOptions:
         self.parser.add_argument('--isTrain', type=str2bool, default='True')
 
         # input/output sizes       
-        self.parser.add_argument('--batchSize', type=int, default=4, help='input batch size')       
+        self.parser.add_argument('--batchSize', type=int, default=16, help='input batch size')       
 
         # for displays
         self.parser.add_argument('--use_tensorboard', type=str2bool, default='False')
@@ -69,10 +69,6 @@ class TrainOptions:
         self.parser.add_argument("--log_frep", type=int, default=200, help='frequence for printing log information')
         self.parser.add_argument("--sample_freq", type=int, default=1000, help='frequence for sampling')
         self.parser.add_argument("--model_freq", type=int, default=10000, help='frequence for saving the model')
-
-        
-
-
         self.isTrain = True
         
     def parse(self, save=True):
@@ -132,10 +128,7 @@ if __name__ == '__main__':
     
     cudnn.benchmark = True
 
-    
-
     model = fsModel()
-
     model.initialize(opt)
 
     #####################################################

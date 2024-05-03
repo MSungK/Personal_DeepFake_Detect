@@ -1,8 +1,9 @@
 #!/usr/bin/zsh
-fileId=1hOBL-Z-e26PdVzmUhD2kkOtTSs0fBv4J
-filename=VGGface2_HQ.zip
-echo $filename
-echo "https://drive.usercontent.google.com/download?id=${fileId}&confirm=xxx"
-curl -L "https://drive.usercontent.google.com/download?id=${fileId}&confirm=xxx" -o $filename
 
-# https://drive.google.com/file/d/1hOBL-Z-e26PdVzmUhD2kkOtTSs0fBv4J/view?usp=drive_link
+fileId=19pWvdEHS-CEG6tW3PdxdtZ5QEymVjImc
+filename=vggface2_crop_arcfacealign_224.tar
+echo $filename
+echo ${fileId}
+
+curl -L "https://drive.usercontent.google.com/download?id=${fileId}&export=download&confirm=xxx" -o ${filename}
+

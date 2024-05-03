@@ -78,7 +78,7 @@ class SwappingDataset(data.Dataset):
         random.seed(self.random_seed)
         random.shuffle(self.dataset)
         print('Finished preprocessing the Swapping dataset, total dirs number: %d...'%len(self.dataset))
-             
+
     def __getitem__(self, index):
         """Return two src domain images and two dst domain images."""
         dir_tmp1        = self.dataset[index]
