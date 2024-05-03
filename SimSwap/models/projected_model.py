@@ -18,6 +18,8 @@ from .base_model import BaseModel
 from .fs_networks_fix import Generator_Adain_Upsample
 
 from pg_modules.projected_discriminator import ProjectedDiscriminator
+import logging
+import sys
 
 def compute_grad2(d_out, x_in):
     batch_size = x_in.size(0)
@@ -60,12 +62,18 @@ class fsModel(BaseModel):
 
 
         if self.isTrain:
+            # Customizing TODO
+            if opt.custom:
+                g_dict = torch.load(opt.G_path)
+                for key, value in self.netG.named_parameters():
+                    assert key in g_dict.keys()
+                    value = g_dict[key]
+                logging.info('Initialize Generator with Customized model')
             # define loss functions
             self.criterionFeat  = nn.L1Loss()
             self.criterionRec   = nn.L1Loss()
 
-
-           # initialize optimizers
+            # initialize optimizers
 
             # optimizer G
             params = list(self.netG.parameters())

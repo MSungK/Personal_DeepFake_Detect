@@ -26,6 +26,8 @@ from util.plot import plot_batch
 
 from models.projected_model import fsModel
 from data.data_loader_Swapping import GetLoader
+from custom_utils import setup_logger
+import logging
 
 def str2bool(v):
     return v.lower() in ('true')
@@ -71,6 +73,11 @@ class TrainOptions:
         self.parser.add_argument("--model_freq", type=int, default=10000, help='frequence for saving the model')
         self.isTrain = True
         
+        # for Customizing TODO
+        self.parser.add_argument('--custom', action='store_true', help='use customizing?')
+        self.parser.add_argument("--G_path", type=str, default="", help='pre-trained Generator path')
+        # self.parser.add_argument("--D_path", type=sstr, default="", help='pre-trained Discriminator path')
+        
     def parse(self, save=True):
         if not self.initialized:
             self.initialize()
@@ -99,7 +106,7 @@ class TrainOptions:
 
 
 if __name__ == '__main__':
-
+    setup_logger()
     opt         = TrainOptions().parse()
     iter_path   = os.path.join(opt.checkpoints_dir, opt.name, 'iter.txt')
 
@@ -149,8 +156,7 @@ if __name__ == '__main__':
     imagenet_std    = torch.Tensor([0.229, 0.224, 0.225]).view(3,1,1)
     imagenet_mean   = torch.Tensor([0.485, 0.456, 0.406]).view(3,1,1)
 
-    train_loader    = GetLoader(opt.dataset,opt.batchSize,8,1234)
-
+    train_loader    = GetLoader(opt.dataset,opt.batchSize,4,1234)
     randindex = [i for i in range(opt.batchSize)]
     random.shuffle(randindex)
 
