@@ -5,6 +5,7 @@ import random
 from PIL import Image
 from torch.utils import data
 from torchvision import transforms as T
+import logging
 
 class data_prefetcher():
     def __init__(self, loader):

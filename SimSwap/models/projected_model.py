@@ -52,10 +52,11 @@ class fsModel(BaseModel):
         self.netArc = self.netArc.cuda()
         self.netArc.eval()
         self.netArc.requires_grad_(False)
-        if not self.isTrain:
-            pretrained_path =  opt.checkpoints_dir
-            self.load_network(self.netG, 'G', opt.which_epoch, pretrained_path)
-            return
+
+        pretrained_path =  opt.checkpoints_dir
+        self.load_network(self.netG, 'G', opt.which_epoch, pretrained_path)
+        logging.info("SUCCESS for loading trained-Generator")
+        
         self.netD = ProjectedDiscriminator(diffaug=False, interp224=False, **{})
         # self.netD.feature_network.requires_grad_(False)
         self.netD.cuda()

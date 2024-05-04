@@ -1,20 +1,9 @@
 #!/usr/bin/zsh
 
-# python train.py --name simswap512_test  \
-#                 --batchSize 16 \
-#                 --gpu_ids 0 \
-#                 --dataset /path/to/VGGFace2HQ \
-#                 --Gdeep True \
-#                 --load_pretrain ./checkpoints
-
 python train.py \
-    --name simswap224_test \
-    --batchSize 8  \
+    --name VGGFaceHQ_512_finetune \
+    --batchSize 2 \
+    --which_epoch latest \
+    --dataset ../data/vggface2-HQ/VGGface2_None_norm_512_true_bygfpgan \
     --gpu_ids 0 \
-    --dataset ../data/vggface_224 \
-    --Gdeep False \
-    --log_frep 100 \
-    --continue_train False \
-    --sample_freq 100 \
-    --custom \
-    --G_path checkpoints/people/latest_net_G.pth
+    --load_pretrain checkpoints/VGGFaceHQ_512_finetune
