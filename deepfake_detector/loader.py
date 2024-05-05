@@ -56,7 +56,7 @@ class Fake_Dataset(Dataset):
         return len(self.fakes)
     
     
-def Loader(dataset, num_workers, is_train:bool):
+def Loader(dataset, batch_size, num_workers, is_train:bool):
     shuffle = True if is_train=True else False
-    loader = DataLoader(dataset, num_workers=num_workers, pin_memory=True, shuffle=shuffle)
+    loader = DataLoader(dataset, num_workers=num_workers, pin_memory=True, shuffle=shuffle, batch_size=batch_size)
     return loader
