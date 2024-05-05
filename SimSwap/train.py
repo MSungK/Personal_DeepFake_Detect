@@ -26,7 +26,7 @@ from util.plot import plot_batch
 
 from models.projected_model import fsModel
 from data.data_loader_Swapping import GetLoader
-from custom_utils import setup_logger
+from custom_utils import setup_logger, K_DataLoader
 import logging
 
 def str2bool(v):
@@ -75,7 +75,7 @@ class TrainOptions:
         
         # for Customizing TODO
         self.parser.add_argument('--custom', action='store_true', help='use customizing?')
-        self.parser.add_argument("--G_path", type=str, default="", help='pre-trained Generator path')
+        # self.parser.add_argument("--G_path", type=str, default="", help='pre-trained Generator path')
         # self.parser.add_argument("--D_path", type=sstr, default="", help='pre-trained Discriminator path')
         
     def parse(self, save=True):
@@ -156,7 +156,11 @@ if __name__ == '__main__':
     imagenet_std    = torch.Tensor([0.229, 0.224, 0.225]).view(3,1,1)
     imagenet_mean   = torch.Tensor([0.485, 0.456, 0.406]).view(3,1,1)
 
-    train_loader    = GetLoader(opt.dataset,opt.batchSize,4,1234)
+    if opt.custom:
+        train_loader = K_DataLoader(opt.dataset, opt.batch_size, 4, 1234)
+    else:
+        train_loader    = GetLoader(opt.dataset, opt.batchSize, 4, 1234)
+    
     randindex = [i for i in range(opt.batchSize)]
     random.shuffle(randindex)
 
