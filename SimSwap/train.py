@@ -69,7 +69,7 @@ class TrainOptions:
         self.parser.add_argument("--Arc_path", type=str, default='arcface_model/arcface_checkpoint.tar', help="run ONNX model via TRT")
         self.parser.add_argument("--total_step", type=int, default=1000000, help='total training step')
         self.parser.add_argument("--log_frep", type=int, default=200, help='frequence for printing log information')
-        self.parser.add_argument("--sample_freq", type=int, default=1000, help='frequence for sampling')
+        self.parser.add_argument("--sample_freq", type=int, default=10000, help='frequence for sampling')
         self.parser.add_argument("--model_freq", type=int, default=10000, help='frequence for saving the model')
         self.isTrain = True
         
@@ -157,7 +157,7 @@ if __name__ == '__main__':
     imagenet_mean   = torch.Tensor([0.485, 0.456, 0.406]).view(3,1,1)
 
     if opt.custom:
-        train_loader = K_DataLoader(opt.dataset, opt.batch_size, 4, 1234)
+        train_loader = K_DataLoader(opt.dataset, opt.batchSize, 4, 1234)
     else:
         train_loader    = GetLoader(opt.dataset, opt.batchSize, 4, 1234)
     

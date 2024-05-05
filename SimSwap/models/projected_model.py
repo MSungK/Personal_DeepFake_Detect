@@ -54,8 +54,7 @@ class fsModel(BaseModel):
         self.netArc.requires_grad_(False)
 
         pretrained_path =  opt.checkpoints_dir
-        self.load_network(self.netG, 'G', opt.which_epoch, pretrained_path)
-        logging.info("SUCCESS for loading trained-Generator")
+        # self.load_network(self.netG, 'G', opt.which_epoch, pretrained_path)
         
         self.netD = ProjectedDiscriminator(diffaug=False, interp224=False, **{})
         # self.netD.feature_network.requires_grad_(False)
@@ -65,9 +64,11 @@ class fsModel(BaseModel):
         if self.isTrain:
             # Customizing TODO
             if opt.custom:
-                g_dict = torch.load(opt.G_path)
-                for key, value in self.netG.named_parameters():
-                    assert key in g_dict.keys()
+                path = 'checkpoints/512/simswap_512_390000_net_G.pth'
+                g_dict = torch.load(path)
+                for key, value in self.netG.state_dict().items():
+                    # assert value.shape != g_dict[key].shape, logging.ERROR(f'{value.shape} != {g_dict[key].shape}')
+                    assert value.shape == g_dict[key].shape, logging.info(f'{key}')
                     value = g_dict[key]
                 logging.info('Initialize Generator with Customized model')
             # define loss functions

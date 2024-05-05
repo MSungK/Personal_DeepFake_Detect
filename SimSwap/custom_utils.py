@@ -54,7 +54,7 @@ class data_prefetcher():
         return self.num_images
 
 
-def K_Dataset(Dataset)
+class K_Dataset(Dataset):
     def __init__(self, root_path, transform, random_seed):
         self.image_dir=root_path
         self.img_transform=transform
