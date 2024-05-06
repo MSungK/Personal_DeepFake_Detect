@@ -130,6 +130,7 @@ if __name__ == '__main__':
         start_epoch, epoch_iter = 1, 0
 
     os.environ['CUDA_VISIBLE_DEVICES'] = str(opt.gpu_ids)
+    logging.info(os.environ['CUDA_VISIBLE_DEVICES'])
     print("GPU used : ", str(opt.gpu_ids))
 
     
@@ -157,9 +158,9 @@ if __name__ == '__main__':
     imagenet_mean   = torch.Tensor([0.485, 0.456, 0.406]).view(3,1,1)
 
     if opt.custom:
-        train_loader = K_DataLoader(opt.dataset, opt.batchSize, 4, 1234)
+        train_loader = K_DataLoader(opt.dataset, opt.batchSize, 8, 1234)
     else:
-        train_loader    = GetLoader(opt.dataset, opt.batchSize, 4, 1234)
+        train_loader    = GetLoader(opt.dataset, opt.batchSize, 8, 1234)
     
     randindex = [i for i in range(opt.batchSize)]
     random.shuffle(randindex)

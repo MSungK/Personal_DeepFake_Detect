@@ -64,12 +64,9 @@ class fsModel(BaseModel):
         if self.isTrain:
             # Customizing TODO
             if opt.custom:
-                path = 'checkpoints/512/simswap_512_390000_net_G.pth'
+                path = 'checkpoints/people/latest_net_G.pth'
                 g_dict = torch.load(path)
-                for key, value in self.netG.state_dict().items():
-                    # assert value.shape != g_dict[key].shape, logging.ERROR(f'{value.shape} != {g_dict[key].shape}')
-                    assert value.shape == g_dict[key].shape, logging.info(f'{key}')
-                    value = g_dict[key]
+                self.netG.load_state_dict(g_dict, strict=True)
                 logging.info('Initialize Generator with Customized model')
             # define loss functions
             self.criterionFeat  = nn.L1Loss()

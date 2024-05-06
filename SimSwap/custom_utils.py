@@ -81,7 +81,7 @@ def K_DataLoader(   root_path,
                     random_seed=1234
                 ):
     c_transforms=T.Compose([
-        T.Resize((512,512)),
+        T.Resize(224),
         T.ToTensor()
     ])
     dataset = K_Dataset(root_path, c_transforms, random_seed)

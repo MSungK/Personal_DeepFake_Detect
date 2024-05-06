@@ -8,16 +8,20 @@ import torch.nn.functional as F
 from torchvision import transforms
 from models.models import create_model
 from options.test_options import TestOptions
+import logging
+from custom_utils import setup_logger
 
 
 def lcm(a, b): return abs(a * b) / fractions.gcd(a, b) if a and b else 0
 
 transformer = transforms.Compose([
+        transforms.Resize(224),
         transforms.ToTensor(),
         #transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
 
 transformer_Arcface = transforms.Compose([
+        transforms.Resize(224),
         transforms.ToTensor(),
         transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
@@ -27,13 +31,29 @@ detransformer = transforms.Compose([
         transforms.Normalize([-0.485, -0.456, -0.406], [1, 1, 1])
     ])
 if __name__ == '__main__':
-    opt = TestOptions().parse()
+    opt = TestOptions().parse() 
+    setup_logger()
 
     start_epoch, epoch_iter = 1, 0
 
     torch.nn.Module.dump_patches = True
     model = create_model(opt)
     model.eval()
+    path = 'checkpoints/people/latest_net_G.pth'
+    before_model = torch.load(path)
+    
+    # f = open('memo.txt', 'w')
+    # for k, v in model.state_dict().items():
+    #     f.write(k + '\n')
+    # exit()
+    # print('===' * 10)
+    from collections import OrderedDict
+    new_dict = OrderedDict()
+    for k, v in before_model.items():
+        new_dict[f'netG.{k}'] = v
+    # for k, v in new_dict.items():
+    #     f.write(k + '\n')
+    model.netG.load_state_dict(before_model, strict=True)
 
     with torch.no_grad():
         
@@ -82,5 +102,6 @@ if __name__ == '__main__':
         output = output[..., ::-1]
 
         output = output*255
-
+        logging.info(output.shape)
         cv2.imwrite(opt.output_path + 'result.jpg', output)
+        logging.info(opt.output_path + 'result.jpg')
