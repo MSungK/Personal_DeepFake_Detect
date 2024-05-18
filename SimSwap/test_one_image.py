@@ -1,4 +1,4 @@
-
+import os
 import cv2
 import torch
 import fractions
@@ -39,7 +39,9 @@ if __name__ == '__main__':
     torch.nn.Module.dump_patches = True
     model = create_model(opt)
     model.eval()
-    path = 'checkpoints/people/latest_net_G.pth'
+    # path = 'checkpoints/people/latest_net_G.pth'
+    path = 'checkpoints/steo_1/99_net_G.pth'
+    
     before_model = torch.load(path)
     
     # f = open('memo.txt', 'w')
@@ -103,5 +105,6 @@ if __name__ == '__main__':
 
         output = output*255
         logging.info(output.shape)
+        os.makedirs(opt.output_path, exist_ok=True)
         cv2.imwrite(opt.output_path + 'result.jpg', output)
         logging.info(opt.output_path + 'result.jpg')

@@ -163,6 +163,7 @@ if __name__ == '__main__':
         train_loader    = GetLoader(opt.dataset, opt.batchSize, 8, 1234)
     
     logging.info(f'Dataset size : {len(train_loader) * opt.batchSize}')
+
     randindex = [i for i in range(opt.batchSize)]
     random.shuffle(randindex)
 
@@ -292,4 +293,3 @@ if __name__ == '__main__':
             print('saving the latest model (steps %d)' % (step+1))
             model.save(step+1)            
             np.savetxt(iter_path, (step+1, total_step), delimiter=',', fmt='%d')
-    wandb.finish()
