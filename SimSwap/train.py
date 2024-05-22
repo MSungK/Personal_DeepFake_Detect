@@ -158,9 +158,9 @@ if __name__ == '__main__':
     imagenet_mean   = torch.Tensor([0.485, 0.456, 0.406]).view(3,1,1)
 
     if opt.custom:
-        train_loader = K_DataLoader(opt.dataset, opt.batchSize, 8, 1234)
+        train_loader = K_DataLoader(opt.dataset, opt.batchSize, 16, 1234)
     else:
-        train_loader    = GetLoader(opt.dataset, opt.batchSize, 8, 1234)
+        train_loader    = GetLoader(opt.dataset, opt.batchSize, 16, 1234)
     
     logging.info(f'Dataset size : {len(train_loader) * opt.batchSize}')
 

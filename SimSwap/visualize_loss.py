@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 
 
 if __name__ == '__main__':
-    loss_log = 'checkpoints/global_face_224/loss_log.txt'
+    loss_log = 'checkpoints/asian_face/loss_log.txt'
     # loss_log = 'checkpoints/people/loss_log.txt'
     f = open(loss_log, 'r')
     lines = f.readlines()

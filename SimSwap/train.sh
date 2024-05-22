@@ -1,8 +1,11 @@
 #!/usr/bin/zsh
 export CUDA_VISIBLE_DEVICES=3
 python train.py \
-    --name global_face_224 \
+    --name asian_face \
     --batchSize 24 \
-    --dataset ../data/global_face \
+    --dataset ../data/asian_face \
     --gpu_ids 3 \
+    --lr 0.00004 \
+    # --sample_freq 1 \
+    # --niter 5 \
     --custom 

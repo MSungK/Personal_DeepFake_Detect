@@ -77,7 +77,7 @@ class K_Dataset(Dataset):
     
 def K_DataLoader(   root_path, 
                     batch_size=16,
-                    num_workers=4,
+                    num_workers=8,
                     random_seed=1234
                 ):
     c_transforms=T.Compose([
