@@ -162,8 +162,6 @@ if __name__ == '__main__':
     else:
         train_loader    = GetLoader(opt.dataset, opt.batchSize, 16, 1234)
     
-    logging.info(f'Dataset size : {len(train_loader) * opt.batchSize}')
-
     randindex = [i for i in range(opt.batchSize)]
     random.shuffle(randindex)
 

@@ -61,7 +61,7 @@ class K_Dataset(Dataset):
         self.seed=random_seed
         self.files=list()
         for file in glob.glob(f'{root_path}/*'):
-            if osp.splitext(file)[1] in ['.jpg', '.png']:
+            if osp.splitext(file)[1] in ['.jpg', '.png', '.JPG', '.PNG']:
                 self.files.append(file)
         self.len_dataset = len(self.files)
         random.seed(self.seed)
@@ -84,6 +84,8 @@ def K_DataLoader(   root_path,
         T.ToTensor()
     ])
     dataset = K_Dataset(root_path, c_transforms, random_seed)
+    logging.info(f'Dataset size : {len(dataset)}')
+
     dataloader = DataLoader(dataset, batch_size=batch_size,
                             drop_last=True, shuffle=True, num_workers=num_workers, pin_memory=True)
     prefetcher = data_prefetcher(dataloader)
