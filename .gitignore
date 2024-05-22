@@ -1,6 +1,11 @@
 *.txt
 *.pt
 *.jpg
+*.JPG
+*.png
+*.PNG
+*.json
+*.JSON
 *.mat
 *.mp4
 *.cache
