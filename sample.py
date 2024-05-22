@@ -1,8 +1,7 @@
-import torch
-
+import os
 
 if __name__ == '__main__':
-    path = 'SimSwap/checkpoints/people/latest_net_D2.pth'
-    model = torch.load(path)
-    for key, value in model.items():
-        print(f'{key} : {value.shape}')
+    path = 'data/filtered'
+    filtered_list = open('filtered_list.txt', 'w')
+    for file in os.listdir(path):
+        filtered_list.write(file + '\n')
