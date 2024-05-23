@@ -17,7 +17,7 @@ if __name__ == '__main__':
     
     avg_D_list = list()
     avg_G_list = list()
-    idx = 41
+    idx = 1039
     avg_D = 0
     avg_G = 0
     for i in range(1, len(G_list)):

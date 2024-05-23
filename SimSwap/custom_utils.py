@@ -7,10 +7,11 @@ from PIL import Image
 import random
 import torch
 
+
 def setup_logger():
     logging.basicConfig(
         level=logging.INFO,
-        format="%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s", datefmt="%H:%M:%S",
+        format="%(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s",
         handlers=[logging.StreamHandler()],
     )
 
@@ -74,7 +75,7 @@ class K_Dataset(Dataset):
     def __len__(self):
         return self.len_dataset
     
-    
+
 def K_DataLoader(   root_path, 
                     batch_size=16,
                     num_workers=8,

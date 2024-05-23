@@ -34,13 +34,14 @@ detransformer = transforms.Compose([
 if __name__ == '__main__':
     opt = TestOptions().parse() 
     setup_logger()
-
+    
     start_epoch, epoch_iter = 1, 0
 
     torch.nn.Module.dump_patches = True
     model = create_model(opt)
     model.eval()
-    path = 'checkpoints/people/latest_net_G.pth'
+    path = 'checkpoints/asian_face/5000_net_G.pth'
+    # path = 'checkpoints/people/latest_net_G.pth'
     
     before_model = torch.load(path)
     
@@ -59,58 +60,27 @@ if __name__ == '__main__':
     source_path = opt.source_path
     target_path = opt.target_path
     
-    for source in glob(source_path):
-        for target in glob(target_path):
-            logging.info(source)
-            logging.info(target)
+    for source in glob(source_path + '/*'):
+        for target in glob(target_path + '/*'):
+            target = transformer_Arcface(Image.open(target)).unsqueeze(0).cuda()
+            source = transformer_Arcface(Image.open(source)).unsqueeze(0).cuda()
+
             with torch.no_grad():
+                arcface_112     = F.interpolate(target,size=(112,112), mode='bicubic')
+                id_vector_src1  = model.netArc(arcface_112)
+                id_vector_src1  = F.normalize(id_vector_src1, p=2, dim=1)
+                img_fake    = model.netG(source, id_vector_src1).cpu()
+                    
+                img_fake    = detransformer(img_fake)
                 
-                pic_a = source
-                img_a = Image.open(pic_a).convert('RGB')
-                img_a = transformer_Arcface(img_a)
-                img_id = img_a.view(-1, img_a.shape[0], img_a.shape[1], img_a.shape[2])
-
-                pic_b = target
-
-                img_b = Image.open(pic_b).convert('RGB')
-                img_b = transformer(img_b)
-                img_att = img_b.view(-1, img_b.shape[0], img_b.shape[1], img_b.shape[2])
-
-                # convert numpy to tensor
-                img_id = img_id.cuda()
-                img_att = img_att.cuda()
-
-                #create latent id
-                img_id_downsample = F.interpolate(img_id, size=(112,112))
-                latend_id = model.netArc(img_id_downsample)
-                latend_id = latend_id.detach().to('cpu')
-                latend_id = latend_id/np.linalg.norm(latend_id,axis=1,keepdims=True)
-                latend_id = latend_id.to('cuda')
-
-
-                ############## Forward Pass ######################
-                img_fake = model(img_id, img_att, latend_id, latend_id, True)
-
-
-                for i in range(img_id.shape[0]):
-                    if i == 0:
-                        row1 = img_id[i]
-                        row2 = img_att[i]
-                        row3 = img_fake[i]
-                    else:
-                        row1 = torch.cat([row1, img_id[i]], dim=2)
-                        row2 = torch.cat([row2, img_att[i]], dim=2)
-                        row3 = torch.cat([row3, img_fake[i]], dim=2)
-
-                #full = torch.cat([row1, row2, row3], dim=1).detach()
-                full = row3.detach()
-                full = full.permute(1, 2, 0)
-                output = full.to('cpu')
-                output = np.array(output)
-                output = output[..., ::-1]
-
-                output = output*255
-                logging.info(output.shape)
+                img_fake    = img_fake.squeeze(0).numpy()
+                img_fake = np.clip(255 * img_fake, 0, 255)
+                img_fake = np.cast[np.uint8](img_fake)
+                img_fake = np.transpose(img_fake, (1,2,0))
+                # print(img_fake)
+                # exit()
+                logging.info(img_fake.shape)
                 os.makedirs(opt.output_path, exist_ok=True)
-                cv2.imwrite(opt.output_path + 'result.jpg', output)
+                Image.fromarray(img_fake).save(opt.output_path + 'result.jpg')
                 logging.info(opt.output_path + 'result.jpg')
+                break

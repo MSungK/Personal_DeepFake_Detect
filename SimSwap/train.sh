@@ -6,4 +6,6 @@ python train.py \
     --dataset ../data/asian_face \
     --gpu_ids 3 \
     --lr 0.00004 \
+    --sample_freq 5000 \
+    --model_freq 5000 \
     --custom 
