@@ -15,9 +15,6 @@ if __name__ == '__main__':
         G_list.append(G_loss)
         D_list.append(D_loss)
     
-    print(G_list)
-    print(D_list)
-    
     avg_D_list = list()
     avg_G_list = list()
     idx = 5
@@ -32,10 +29,6 @@ if __name__ == '__main__':
             avg_D = 0
             avg_G = 0
 
-    print(avg_D_list)
-    print(avg_G_list)
-    # plt.plot(range(1, len(G_list)+1), G_list, label='G_Loss')
-    # plt.plot(range(1, len(D_list)+1), D_list, label='D_Loss')
     plt.plot(range(1, len(avg_G_list)+1), avg_G_list, label='G_Loss')
     plt.plot(range(1, len(avg_D_list)+1), avg_D_list, label='D_Loss')
     plt.xlabel('epoch')
