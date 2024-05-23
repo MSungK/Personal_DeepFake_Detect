@@ -136,7 +136,7 @@ if __name__ == '__main__':
         train_loader    = GetLoader(opt.dataset, opt.batchSize, 16, 1234)
 
     # Model Initialization
-    path = 'checkpoints/asian_face/70000_net_G.pth'
+    path = 'checkpoints/asian_face/85000_net_G.pth'
     logging.info(f"Model's path : {path}")
     before_model = torch.load(path)
     from collections import OrderedDict
