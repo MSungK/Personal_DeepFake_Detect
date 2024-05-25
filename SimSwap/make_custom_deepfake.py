@@ -11,7 +11,7 @@
 #############################################################
 
 import os
-import time
+from tqdm import tqdm
 import random
 import argparse
 import numpy as np
@@ -77,6 +77,7 @@ class TrainOptions:
         
         # for Customizing TODO
         self.parser.add_argument('--custom', action='store_true', help='use customizing?')
+        self.parser.add_argument("--model_path", type=str, required=True, help='path for loading model')
         # self.parser.add_argument("--G_path", type=str, default="", help='pre-trained Generator path')
         # self.parser.add_argument("--D_path", type=sstr, default="", help='pre-trained Discriminator path')
         
@@ -118,9 +119,6 @@ if __name__ == '__main__':
         os.makedirs(sample_path)
 
     os.environ['CUDA_VISIBLE_DEVICES'] = str(opt.gpu_ids)
-    logging.info(os.environ['CUDA_VISIBLE_DEVICES'])
-    print("GPU used : ", str(opt.gpu_ids))
-
     
     cudnn.benchmark = True
 
@@ -130,47 +128,53 @@ if __name__ == '__main__':
     imagenet_std    = torch.Tensor([0.229, 0.224, 0.225]).view(3,1,1)
     imagenet_mean   = torch.Tensor([0.485, 0.456, 0.406]).view(3,1,1)
 
+    from random import randrange
+    seed = randrange(1, 1000000)
     if opt.custom:
-        train_loader = K_DataLoader(opt.dataset, opt.batchSize, 16, 1234)
+        train_loader = K_DataLoader(opt.dataset, opt.batchSize, 16, seed)
     else:
-        train_loader    = GetLoader(opt.dataset, opt.batchSize, 16, 1234)
+        train_loader    = GetLoader(opt.dataset, opt.batchSize, 16, seed)
 
     # Model Initialization
-    path = 'checkpoints/asian_face/85000_net_G.pth'
-    logging.info(f"Model's path : {path}")
-    before_model = torch.load(path)
+    logging.info(f"Model's path : {opt.model_path}")
+    save_name = opt.model_path[opt.model_path.find('/')+1 : opt.model_path.find('_')]
+    logging.info(f'save_name : {save_name}')
+    
+    before_model = torch.load(opt.model_path)
     from collections import OrderedDict
     new_dict = OrderedDict()
     for k, v in before_model.items():
         new_dict[f'netG.{k}'] = v
     model.netG.load_state_dict(before_model, strict=True)
     
-    # TODO
-    src_image1, src_image2  = train_loader.next()
+    num_step = len(os.listdir(opt.dataset)) // opt.batchSize
+    logging.info(f'num_step : {num_step}')
     
     model.netG.eval()
-    with torch.no_grad():
-        arcface_112     = F.interpolate(src_image2,size=(112,112), mode='bicubic')
-        id_vector_src1  = model.netArc(arcface_112)
-        id_vector_src1  = F.normalize(id_vector_src1, p=2, dim=1)
-        img_fake    = model.netG(src_image1, id_vector_src1).cpu()
+    cnt = 1
+    
+    for step in tqdm(range(num_step)):
+        src_image1, src_image2  = train_loader.next()
+        with torch.no_grad():
+            arcface_112     = F.interpolate(src_image2,size=(112,112), mode='bicubic')
+            id_vector_src2  = model.netArc(arcface_112)
+            id_vector_src2  = F.normalize(id_vector_src2, p=2, dim=1)
+            img_fake    = model.netG(src_image1, id_vector_src2).cpu()
+                
+            img_fake    = img_fake * imagenet_std
+            img_fake    = img_fake + imagenet_mean
+            img_fake    = img_fake.numpy().transpose(0,2,3,1)
+
+            def postprocess(x):
+                """[0,1] to uint8."""
+
+                x = np.clip(255 * x, 0, 255)
+                x = np.cast[np.uint8](x)
+                return x
             
-        img_fake    = img_fake * imagenet_std
-        img_fake    = img_fake + imagenet_mean
-        img_fake    = img_fake.numpy().transpose(0,2,3,1)
-
-        def postprocess(x):
-            """[0,1] to uint8."""
-
-            x = np.clip(255 * x, 0, 255)
-            x = np.cast[np.uint8](x)
-            return x
-        
-        img_fake = postprocess(img_fake)
-        cnt = 1
-        for i in range(img_fake.shape[0]):
-            img = img_fake[i]
-            logging.info(img.shape)
-            Image.fromarray(img).save(f'generated/{cnt}.png')
-            cnt+=1
-        
+            img_fake = postprocess(img_fake)
+            
+            for i in range(img_fake.shape[0]):
+                img = img_fake[i]
+                Image.fromarray(img).save(f'../data/fake_images/{save_name}_{cnt}.png')
+                cnt+=1
