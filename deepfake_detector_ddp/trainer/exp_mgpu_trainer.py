@@ -41,6 +41,7 @@ class ExpMultiGpuTrainer(AbstractTrainer):
                             log_every_n_steps=1)
         trainer.fit(self.model, 
                     datamodule=self.loader,)
+        trainer.test(ckpt_path='best')
 
     def _save_pth(self, name):
         save_dir = os.path.join(self.dir, f"best_model_{name}.pth" )

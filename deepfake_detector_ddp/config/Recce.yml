@@ -18,7 +18,7 @@ config:
   loss: binary_ce
   metric: Acc
   debug: False
-  epoch: 100 # TODO
+  epoch: 1 # TODO
   device: "cuda:1"
   #  ckpt: best_model_1000
   # warmup_step: 0
