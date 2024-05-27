@@ -1,114 +1,82 @@
-# Implicit Identity Leakage: The Stumbling Block to Improving Deepfake Detection Generalization
+# RECCE CVPR 2022
 
-This repo includes the authors' [Pytorch](https://pytorch.org/) implementation of the paper:
+:page_facing_up: End-to-End Reconstruction-Classification Learning for Face Forgery Detection
 
-#### [Implicit Identity Leakage: The Stumbling Block to Improving Deepfake Detection Generalization](https://arxiv.org/abs/2210.14457)
+:boy: Junyi Cao, Chao Ma, Taiping Yao, Shen Chen, Shouhong Ding, Xiaokang Yang
 
-Computer Vision and Pattern Recognition (CVPR) 2023
-
-[[arxiv](https://arxiv.org/abs/2210.14457)]
-
-## Introduction
-
-In this work, we take a deep look into the generalization ability of binary classifiers for the task of deepfake detection. Specifically, 
-
-- We discover that deepfake detection models supervised only by binary labels are very sensitive to the identity information of the images, which is termed as the *Implicit Identity Leakage* in the paper. 
-
-- Based on our analyses, we propose a simple yet effective method termed as the *ID-unaware Deepfake Detection Model* to reduce the influence of the ID representation, successfully outperforming other state-of-the-art methods.
-
-  ![overview](./overview.png)
-
-## Updates
-
-- [x] [03/2023] release the training and test code for our model 
-- [x] [03/2023] release the pretrained weight 
-
-## Dependencies
-
-* Python 3 >= 3.6
-* Pytorch >= 1.6.0
-* OpenCV >= 4.4.0
-* Scipy >= 1.4.1
-* NumPy >= 1.19.5
-
-## Data Preparation
-
-##### Take FF++ as an example:
-
-1. Download the dataset from [FF++](https://github.com/ondyari/FaceForensics) and put them under the *./data*.
-
+**Please consider citing our paper if you find it interesting or helpful to your research.**
 ```
-.
-└── data
-    └── FaceForensics++
-        ├── original_sequences
-        │   └── youtube
-        │       └── raw
-        │           └── videos
-        │               └── *.mp4
-        ├── manipulated_sequences
-        │   ├── Deepfakes
-        │       └── raw
-        │           └── videos
-        │               └── *.mp4
-        │   ├── Face2Face
-        │		...
-        │   ├── FaceSwap
-        │		...
-        │   ├── NeuralTextures
-        │		...
-        │   ├── FaceShifter
-        │		...
+@InProceedings{Cao_2022_CVPR,
+    author    = {Cao, Junyi and Ma, Chao and Yao, Taiping and Chen, Shen and Ding, Shouhong and Yang, Xiaokang},
+    title     = {End-to-End Reconstruction-Classification Learning for Face Forgery Detection},
+    booktitle = {Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+    month     = {June},
+    year      = {2022},
+    pages     = {4113-4122}
+}
 ```
 
-2. Download the landmark detector from [here](https://github.com/codeniko/shape_predictor_81_face_landmarks) and put it in the folder *./lib*.
+----
 
-3. Run the code to extract frames from FF++ videos and save them under the *./train_images* or *./test_images* based on the division in the original dataset.
+### Introduction
 
-   ```
-    python3 lib/extract_frames_ldm_ff++.py
-   ```
+This repository is an implementation for *End-to-End Reconstruction-Classification Learning for Face Forgery Detection* presented in CVPR 2022. In the paper, we propose a novel **REC**onstruction-**C**lassification l**E**arning framework called **RECCE** to detect face forgeries. The code is based on Pytorch. Please follow the instructions below to get started.
 
-## Pretrained weights
 
-You can download pretrained weights [here](https://drive.google.com/file/d/1JNMI4RGssgCOl9t05jkUa6imnw5XR5id/view?usp=sharing). 
+### Motivation
 
-## Evaluations
+Briefly, we train a reconstruction network over genuine images only and use the output of the latent feature by the encoder to perform binary classification. Due to the discrepancy in the data distribution between genuine and forged faces, the reconstruction differences of forged faces are obvious and also indicate the probably forged regions. 
 
-To evaluate the model performance, please run: 
 
+### Basic Requirements
+Please ensure that you have already installed the following packages.
+- [Pytorch](https://pytorch.org/get-started/previous-versions/) 1.7.1
+- [Torchvision](https://pytorch.org/get-started/previous-versions/) 0.8.2
+- [Albumentations](https://github.com/albumentations-team/albumentations#spatial-level-transforms) 1.0.3
+- [Timm](https://github.com/rwightman/pytorch-image-models) 0.3.4
+- [TensorboardX](https://pypi.org/project/tensorboardX/#history) 2.1
+- [Scipy](https://pypi.org/project/scipy/#history) 1.5.2
+- [PyYaml](https://pypi.org/project/PyYAML/#history) 5.3.1
+
+### Dataset Preparation
+- We include the dataset loaders for several commonly-used face forgery datasets, *i.e.,* [FaceForensics++](https://github.com/ondyari/FaceForensics), [Celeb-DF](https://www.cs.albany.edu/~lsw/celeb-deepfakeforensics.html), [WildDeepfake](https://github.com/deepfakeinthewild/deepfake-in-the-wild), and [DFDC](https://ai.facebook.com/datasets/dfdc). You can enter the dataset website to download the original data.
+- For FaceForensics++, Celeb-DF, and DFDC, since the original data are in video format, you should first extract the facial images from the sequences and store them. We use [RetinaFace](https://github.com/biubug6/Pytorch_Retinaface) to do this.
+
+### Config Files
+- We have already provided the config templates in `config/`. You can adjust the parameters in the yaml files to specify a training process. More information is presented in [config/README.md](./config/README.md).
+
+### Training
+- We use `torch.distributed` package to train the models, for more information, please refer to [PyTorch Distributed Overview](https://pytorch.org/tutorials/beginner/dist_overview.html).
+- To train a model, run the following script in your console. 
+```{bash}
+CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --nproc_per_node=1 --master_port 12345 train.py --config path/to/config.yaml
 ```
-python3 test.py   --cfg ./configs/caddm_test.cfg
+- `--config`: Specify the path of the config file. 
+
+### Testing
+- To test a model, run the following script in your console. 
+```{bash}
+python test.py --config path/to/config.yaml
 ```
+- `--config`: Specify the path of the config file.
 
-## Results
-
-Our model achieved the following performance on:
-
-| Training Data | Backbone        | FF++       | Celeb-DF   | DFDC       |
-| ------------- | --------------- | ---------- | ---------- | ---------- |
-| FF++          | ResNet-34       | 99.70%     | 91.15%     | 71.49%     |
-| FF++          | EfficientNet-b3 | 99.78%     | 93.08%     | 73.34%     |
-| FF++          | EfficientNet-b4 | **99.79%** | **93.88%** | **73.85%** |
-
-Note: the metric is *video-level AUC*.
-
-## Training
-
-To train our model from scratch, please run :
-
+### Inference
+- We provide the script in `inference.py` to help you do inference using custom data. 
+- To do inference, run the following script in your console.
+```{bash}
+python inference.py --bin path/to/model.bin --image_folder path/to/image_folder --device $DEVICE --image_size $IMAGE_SIZE
 ```
-python3  train.py --cfg ./configs/caddm_train.cfg
-```
+- `--bin`: Specify the path of the model bin generated by the training script of this project.
+- `--image_folder`: Specify the directory of custom facial images. The script accepts images end with `.jpg` or `.png`.
+- `--device`: Specify the device to run the experiment, e.g., `cpu`, `cuda:0`.
+- `--image_size`: Specify the spatial size of input images.
+- The program will output the fake probability for each input image like this:
+    ```
+    path: path/to/image1.jpg           | fake probability: 0.1296      | prediction: real
+    path: path/to/image2.jpg           | fake probability: 0.9146      | prediction: fake
+    ```
+- Type `python inference.py -h` in your console for more information about available arguments.
 
-## Citation
 
-Coming soon
-
-## Acknowledgements
-
-- [SSD](https://arxiv.org/abs/1512.02325)
-
-## Contact
-
-If you have any questions, please feel free to contact us via jirenhe@megvii.com.
+### Acknowledgement
+- We thank Qiqi Gu for helping plot the schematic diagram of the proposed method in the manuscript.
