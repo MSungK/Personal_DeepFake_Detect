@@ -24,7 +24,6 @@ class AbstractTrainer(object):
         self.gpu = None
         self.dir = None
         self.debug = None
-        self.device = None
         self.resume = None
         self.local_rank = None
         self.num_classes = None

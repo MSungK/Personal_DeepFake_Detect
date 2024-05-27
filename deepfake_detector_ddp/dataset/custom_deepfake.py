@@ -22,9 +22,14 @@ class Custom_Dataset(Dataset):
             self.fake_images.append([file, 0])
         self.images = self.real_images + self.fake_images
 
-        self.transform = T.Compose([T.Resize(299),
-                                    T.RandomHorizontalFlip(p=0.5),
-                                    T.ToTensor()])
+        info(f"Stage : {root_path.split('/')[-1]}")
+        if root_path.split('/')[-1] == 'train':
+            self.transform = T.Compose([T.Resize(299),
+                                        T.RandomHorizontalFlip(p=0.5),
+                                        T.ToTensor()])
+        else:
+            self.transform = T.Compose([T.Resize(299),
+                                        T.ToTensor()])
     def __len__(self):
         return len(self.images)
 

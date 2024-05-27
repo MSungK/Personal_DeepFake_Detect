@@ -18,15 +18,14 @@ config:
   loss: binary_ce
   metric: Acc
   debug: False
-  epoch: 5 # TODO
-  device: "cuda:1" # TODO
-  log_path: './log.txt'
+  epoch: 100 # TODO
+  device: "cuda:1"
   #  ckpt: best_model_1000
   # warmup_step: 0
 data:
-  train_batch_size: 100
-  val_batch_size: 200
-  test_batch_size: 200
+  train_batch_size: 56
+  val_batch_size: 64
+  test_batch_size: 64
   name: Custom_Deepfake
   file: "./config/dataset/custom_deepfake.yml"
   train_branch: "train_cfg"

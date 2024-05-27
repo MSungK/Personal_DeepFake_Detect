@@ -2,7 +2,6 @@ import yaml
 import argparse
 
 from trainer import ExpMultiGpuTrainer
-from custom_utils import setup_logger
 
 def arg_parser():
     parser = argparse.ArgumentParser(description="config")
@@ -21,7 +20,6 @@ if __name__ == '__main__':
 
     torch.backends.cudnn.benchmark = True
     torch.backends.cudnn.enabled = True
-    setup_logger()
     
     arg = arg_parser()
     config = arg.config
