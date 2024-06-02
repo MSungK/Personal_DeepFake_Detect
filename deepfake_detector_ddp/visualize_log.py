@@ -2,7 +2,7 @@ import csv
 from os import path as osp
 
 if __name__ == '__main__':
-    path = 'logs/lightning_logs/version_3/metrics.csv'
+    path = 'logs/lightning_logs/version_4/metrics.csv'
     fig_path = 'figures'
     reader = list(csv.reader(open(path, 'r')))
     metric = dict()
