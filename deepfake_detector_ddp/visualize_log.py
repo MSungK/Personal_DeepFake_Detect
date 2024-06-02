@@ -1,8 +1,9 @@
 import csv
-from pprint import pprint
+from os import path as osp
 
 if __name__ == '__main__':
-    path = 'logs/lightning_logs/version_0/metrics.csv'
+    path = 'logs/lightning_logs/version_3/metrics.csv'
+    fig_path = 'figures'
     reader = list(csv.reader(open(path, 'r')))
     metric = dict()
     converter = dict()
@@ -24,4 +25,5 @@ if __name__ == '__main__':
             plt.plot(range(1, len(value)+1), value)
             plt.title(key)
             key = key.replace('/', '-')
-            plt.savefig(key)
+            plt.savefig(osp.join(fig_path, key))
+            plt.clf()

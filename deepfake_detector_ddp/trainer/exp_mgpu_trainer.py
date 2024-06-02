@@ -21,6 +21,7 @@ class ExpMultiGpuTrainer(AbstractTrainer):
         # load model
         self.num_classes = model_cfg["num_classes"]
         self.device = config_cfg['device']
+        # print(model_cfg)  # {'num_classes': 1}
         self.model = load_model(self.model_name)(**model_cfg)
         self.model = Model(self.model, config_cfg)
         self.loader = Custom_Loader(root_path='../data/deepfake_classification/', data_cfg=data_cfg)
@@ -41,7 +42,9 @@ class ExpMultiGpuTrainer(AbstractTrainer):
                             log_every_n_steps=1)
         trainer.fit(self.model, 
                     datamodule=self.loader,)
-        trainer.test(ckpt_path='best')
+        trainer.test(ckpt_path='best', 
+                    datamodule=self.loader, 
+                    verbose=True)
 
     def _save_pth(self, name):
         save_dir = os.path.join(self.dir, f"best_model_{name}.pth" )
