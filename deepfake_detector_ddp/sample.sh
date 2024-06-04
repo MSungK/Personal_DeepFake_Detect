@@ -1,0 +1,1 @@
+python -u verify.py --tune --model resnest50 --batch-size 30 --workers 1 --no-cuda /path/to/imagenet
