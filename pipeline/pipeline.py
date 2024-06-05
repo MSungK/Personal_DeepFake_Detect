@@ -4,6 +4,8 @@ import numpy as np
 from deepfake_detector import Recce
 import torch
 from torchvision import transforms as T
+import warnings
+warnings.filterwarnings(action='default')
 
 transform = T.Compose([T.ToTensor(), T.Resize(299)])
 
@@ -25,7 +27,8 @@ if __name__ == '__main__':
     deepfake_detector.eval()
     
     # Loading input
-    img = Image.open('data/150000_10032.png')
+    img = Image.open('data/150000_10032.png')  # Fake Image
+    # img = Image.open('data/1031.png')  # Real Image
     
     # Inference
     results = face_detector.predict(source=img, device='cuda:0', iou=0.01)
@@ -45,7 +48,7 @@ if __name__ == '__main__':
     
     preds = np.array(preds)
     pred = np.max(preds)
-    flag = True if pred > 0.5 else False
+    flag = "Real" if pred > 0.5 else "Fake"
     print(flag)
 
 
