@@ -27,7 +27,7 @@ if __name__ == '__main__':
     deepfake_detector.eval()
     
     # Loading input
-    img = Image.open('data/150000_10032.png')  # Fake Image
+    img = Image.open('data/150000_10014.png')  # Fake Image
     # img = Image.open('data/1031.png')  # Real Image
     
     # Inference
@@ -49,7 +49,9 @@ if __name__ == '__main__':
     preds = np.array(preds)
     pred = np.max(preds)
     flag = "Real" if pred > 0.5 else "Fake"
+    print('===' * 10)
     print(flag)
+    print('===' * 10)
 
 
 # Tracking for Video
