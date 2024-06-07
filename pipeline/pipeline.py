@@ -16,6 +16,7 @@ if __name__ == '__main__':
     
     # Loading deepfake detector
     deepfake_detector = Recce(num_classes=1)
+    
     # before_weight = torch.load('deepfake_detector.pt')['state_dict']
     # from collections import OrderedDict
     # new_weight = OrderedDict()
