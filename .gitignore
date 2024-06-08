@@ -19,3 +19,4 @@
 *.onnx
 *.pth
 *.npy
+!pipeline/data/*.png
